@@ -50,12 +50,12 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
     if moment == True and case != None:
         raise Exception('Moment diagram is only available for load combinations,'
                         ' not load cases.')
-    # Create a visual node for each node in the model
+    # 为模型中每个点创造一个可视化节点
     vis_nodes = []
     for node in model.Nodes:
         vis_nodes.append(VisNode(node, text_height))
 
-    # Create a visual auxiliary node for each auxiliary node in the model
+    # 为模型中每个辅助节点创造可视化辅助节点
     vis_aux_nodes = []
     for aux_node in model.auxNodes:
         vis_aux_nodes.append(VisNode(aux_node, text_height, color='red'))
@@ -65,15 +65,15 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
     for spring in model.Springs:
         vis_springs.append(VisSpring(spring, model.Nodes, text_height))
 
-        # Create a visual member for each member in the model
+    # 为模型中每个杆件创造可视化杆件
     vis_members = []
     for member in model.Members:
         vis_members.append(VisMember(member, model.Nodes, text_height))
 
-    # Create a cell array to store the plate elements
+    # 创造一个单元阵列（cell array）来存储 the plate elements
     plates = vtk.vtkCellArray()
 
-    # Create a `vtkPoints` object to store all the plate points
+    # 创造一个 `vtkPoints` object to store all the plate points
     plate_points = vtk.vtkPoints()
 
     # Create a lists to store plate results
@@ -83,10 +83,10 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
     plate_results = vtk.vtkDoubleArray()
     plate_results.SetNumberOfComponents(1)
 
-    # Each plate will be assigned a unique plate number `i`
+    # 每个板被赋予一个独特的板编号 `i`
     i = 0
 
-    # Add each plate in the model to the cell array we just created
+    # 把每个板都加入刚才创建的单元阵列里
     for item in model.Plates + model.Quads:
 
         # Create a point for each corner (must be in counter clockwise order)

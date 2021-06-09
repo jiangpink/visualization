@@ -6,7 +6,7 @@ from numpy.linalg import norm
 
 # %%import vtk
 
-
+#10-353行都是渲染模型的函数定义
 def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, moment=False,moment_scale=10,
                 render_loads=True, color_map=None, combo_name='Combo 1', case=None):
     '''
@@ -89,7 +89,7 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
     # 把每个板都加入刚才创建的单元阵列里
     for item in model.Plates + model.Quads:
 
-        # Create a point for each corner (must be in counter clockwise order)
+        # Create a point for each corner (必须按逆时针顺序)
         # if deformed_shape == True:
         #     p0 = [item.iNode.X + item.iNode.DX[combo_name],
         #           item.iNode.Y + item.iNode.DY[combo_name],
@@ -348,11 +348,11 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
     window.Render()
     interactor.Start()
 
-
+#353-415都是渲染变形的函数定义
 # %%
 def __DeformedShape(model, renderer, scale_factor, text_height, combo_name):
     '''
-    Renders the deformed shape of a model.
+    渲染一个模型的变形
 
     Parameters
     ----------
@@ -414,7 +414,7 @@ def __DeformedShape(model, renderer, scale_factor, text_height, combo_name):
     actor.SetMapper(mapper)
     renderer.AddActor(actor)
 
-
+#418-436行：画弯矩图函数的定义，应是学长加的
 def __MomentDiagram(model, renderer, moment_scale, text_height, combo_name):
     # Create an append filter to add all the shape polydata to
     append_filter = vtk.vtkAppendPolyData()

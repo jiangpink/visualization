@@ -437,9 +437,8 @@ def __MomentDiagram(model, renderer, moment_scale, text_height, combo_name):
 
 
 def __RenderLoads(model, renderer, text_height, combo_name, case):
-    # Create an append filter to store all the polydata in. This will allow us to use fewer actors to
-    # display all the loads, which will greatly improve rendering speed as the user interacts. VTK
-    # becomes very slow when a large number of actors are used.
+    # 创建一个附加filter to store来存储所有的polydata(多边形数据). 这会是我们用更少的actor来展示所有荷载，从而大大提高渲染速度
+    # 当用到大量actor时VTK会变得很慢
     polydata = vtk.vtkAppendPolyData()
 
     # Polygons are treated as cells in VTK. Create a cell array to store all the area load polygons

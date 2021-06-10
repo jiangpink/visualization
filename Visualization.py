@@ -49,7 +49,9 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
     if moment == True and case != None:
         raise Exception('Moment diagram is only available for load combinations,'
                         ' not load cases.')
-    # 将模型中每个节点可视化
+    # 将模型中每个节点可视化，它看似多余地创建了一个vis_node列表，而不是直接
+    #for node in model.Nodes:
+    #    VisNode(node, text_height) 此后vis_nodes列表只在292行出现了一次，这说明VisNode可能无法做到可视化，292行那里才实现可视化
     vis_nodes = []
     for node in model.Nodes:
         vis_nodes.append(VisNode(node, text_height))
@@ -72,11 +74,11 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
     # 创造一个单元阵列（cell array）来存储 the plate elements
     plates = vtk.vtkCellArray()
 
-    # 创造一个 `vtkPoints` object来存储所有的plate points
+    # 创造一个 `vtkPoints` 对象来存储所有的plate points
     plate_points = vtk.vtkPoints()
 
     # 创造一个列表来存储plate results
-    # `results` will store the results in a python iterable list
+    # `results` 会以可迭代列表的形式存储结果
     # `plate_results` will store the results in a `vtkDoubleArray` for VTK
     results = []
     plate_results = vtk.vtkDoubleArray()
@@ -108,15 +110,15 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
         p2 = [item.mNode.X, item.mNode.Y, item.mNode.Z]
         p3 = [item.nNode.X, item.nNode.Y, item.nNode.Z]
 
-        # Add the points to the `vtkPoints` object we created earlier
+        # 把这些点添加到我们刚才创建的 `vtkPoints` 对象里面
         plate_points.InsertNextPoint(p0)
         plate_points.InsertNextPoint(p1)
         plate_points.InsertNextPoint(p2)
         plate_points.InsertNextPoint(p3)
 
-        # Create a `vtkQuad` based on the four points we just defined
-        # The 1st number in `SetId()` is the local point id
-        # The 2nd number in `SetId()` is the global point id
+        # 基于我们刚才创建的3个点创建一个`vtkQuad` 
+        #  `SetId()`中的第一个数是局部 point id
+        #  `SetId()` 中第二个数是全局 point id
         quad = vtk.vtkQuad()
         quad.GetPointIds().SetId(0, i * 4)
         quad.GetPointIds().SetId(1, i * 4 + 1)
@@ -197,13 +199,13 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
             plate_results.InsertNextTuple([r2])
             plate_results.InsertNextTuple([r3])
 
-        # Insert the quad into the cell array
+        # 把quad 插入单元阵列
         plates.InsertNextCell(quad)
 
         # Increment `i` for the next plate
         i += 1
 
-    # Create a `vtkPolyData` object to store plate data in
+    # 创建一个`vtkPolyData` 对象来存储plate data
     plate_polydata = vtk.vtkPolyData()
 
     # Add the points and plates to the dataset
@@ -238,21 +240,21 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
         plate_mapper.SetScalarModeToUsePointData()
         lut.Build()
 
-    # 创建窗口
+    # 创建窗口，既然窗口在这里才创建，说明画图自此开始，上面只是准备工作
     window = vtk.vtkRenderWindow()
 
     # 设置窗口的宽和长（像素值）
     window.SetSize(750, 750)
 
-    # 设置interactor. The interactor style determines hoe user
-    # interactions affect the view. The trackball camera style behaves much
-    # like popular commercial CAD programs.
+    # 设置interactor. The interactor style determines how user's
+    # interactions affect the view. The trackball camera style 和当下流行的
+    # 商用 CAD programs很像
     interactor = vtk.vtkRenderWindowInteractor()
     style = vtk.vtkInteractorStyleTrackballCamera()
     interactor.SetInteractorStyle(style)
     interactor.SetRenderWindow(window)
 
-    # Create a renderer object and add it to the window
+    # 创建一个渲染对象并把它加入窗口！！！
     renderer = vtk.vtkRenderer()
     window.AddRenderer(renderer)
 
@@ -285,7 +287,7 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
 
     # Combine the polydata from each node
     for vis_node in vis_nodes:
-        # Add the node's polydata
+        # 添加节点的polydata
         node_polydata.AddInputData(vis_node.polydata.GetOutput())
 
         # Add the actor for the node label
@@ -307,7 +309,7 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
     # Add the node actor to the renderer
     renderer.AddActor(node_actor)
 
-    # Add actors for each auxiliary node
+    # 为某个辅助节点添加actors
     for vis_aux_node in vis_aux_nodes:
         # Add the actor for the auxiliary node
         renderer.AddActor(vis_aux_node.actor)
@@ -337,13 +339,13 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
     if (combo_name != None or case != None) and render_loads != False:
         __RenderLoads(model, renderer, text_height, combo_name, case)
 
-    # Set the window's background to blue
+    # 把窗口背景设置成蓝色
     renderer.SetBackground(0.1, 0.1, 0.4)
 
-    # Reset the camera
+    # 重置相机
     renderer.ResetCamera()
 
-    # Render the window and start the interactor
+    # 渲染窗口并启动interactor
     window.Render()
     interactor.Start()
 

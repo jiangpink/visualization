@@ -16,12 +16,12 @@ frame.AddNode('N2', -100, 0, 0)
 frame.AddNode('N3', 0, 0, -100)
 frame.AddNode('N4', 0, -100, 0)
 
-# define support
+# 定义support
 frame.DefineSupport('N2', True, True, True, True, True, True)
 frame.DefineSupport('N3', True, True, True, True, True, True)
 frame.DefineSupport('N4', True, True, True, True, True, True)
 
-# Create members (all members will have the same properties in this example)
+# Create members (这个例子中所有杆件性质相同)
 J = 50
 Iy = 100
 Iz = 100

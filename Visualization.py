@@ -816,36 +816,36 @@ class VisNode():
     # Constructor
     def __init__(self, node, text_height=5, color=None):
 
-        # Create an append filter to append all the sources related to the node into a single 'PolyData' object
+        # 创建一个append filter来把和节点相关的所有信息添加进一个'PolyData'对象，虽然不知道filter是干啥用的
         self.polydata = vtk.vtkAppendPolyData()
 
-        # Get the node's position
+        # 获取节点位置即坐标x、y、z
         X = node.X  # Global X coordinate
         Y = node.Y  # Global Y coordinate
         Z = node.Z  # Global Z coordinate
 
-        # Generate a sphere source for the node
+        # 为节点生成一个sphere(球体) source
         sphere = vtk.vtkSphereSource()
         sphere.SetCenter(X, Y, Z)
         sphere.SetRadius(0.6 * text_height)
         sphere.Update()
         self.polydata.AddInputData(sphere.GetOutput())
 
-        # Create the text for the node label
+        # 为node label创建text
         label = vtk.vtkVectorText()
         label.SetText(node.Name)
 
-        # Set up a mapper for the node label
+        # 为node label 设置一个mapper
         lblMapper = vtk.vtkPolyDataMapper()
         lblMapper.SetInputConnection(label.GetOutputPort())
 
-        # Set up an actor for the node label
+        # 为node label设置一个actor
         self.lblActor = vtk.vtkFollower()
         self.lblActor.SetMapper(lblMapper)
         self.lblActor.SetScale(text_height, text_height, text_height)
         self.lblActor.SetPosition(X + 0.6 * text_height, Y + 0.6 * text_height, Z)
 
-        # Generate any supports that occur at the node
+        # 生成所有作用在节点的support
         # Check for a fixed suppport
         if node.SupportDX == True and node.SupportDY == True and node.SupportDZ == True \
                 and node.SupportRX == True and node.SupportRY == True and node.SupportRZ == True:
@@ -1065,7 +1065,7 @@ class VisNode():
                 support3.Update()
                 self.polydata.AddInputData(support3.GetOutput())
 
-        # Update the append filter
+        # 更新append filter
         self.polydata.Update()
 
         # Create a mapper and actor
@@ -1073,7 +1073,7 @@ class VisNode():
         mapper.SetInputConnection(self.polydata.GetOutputPort())
         self.actor = vtk.vtkActor()
 
-        # Add color to the actors
+        # 给actors上色
         if color == 'red':
             self.actor.GetProperty().SetColor(255, 0, 0)  # Red
             self.lblActor.GetProperty().SetColor(255, 0, 0)  # Red

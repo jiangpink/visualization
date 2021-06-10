@@ -51,7 +51,7 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
                         ' not load cases.')
     # 将模型中每个节点可视化，它看似多余地创建了一个vis_node列表一定是后面还有用，不然直接
     #for node in model.Nodes:
-    #    VisNode(node, text_height)就行了
+    #    VisNode(node, text_height)就行了，此后vis_nodes列表只在292行出现了一次
     vis_nodes = []
     for node in model.Nodes:
         vis_nodes.append(VisNode(node, text_height))

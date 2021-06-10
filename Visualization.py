@@ -426,7 +426,7 @@ def __MomentDiagram(model, renderer, moment_scale, text_height, combo_name):
             vis_member = Vismom(member, model.Nodes, moment_scale, text_height, combo_name)
             append_filter.AddInputData(vis_member.source)
 
-    # Create a mapper and actor for the append filter
+    # 为附加filter创建一个mapper和actor
     mapper = vtk.vtkPolyDataMapper()
     mapper.SetInputConnection(append_filter.GetOutputPort())
     actor = vtk.vtkActor()
@@ -436,8 +436,8 @@ def __MomentDiagram(model, renderer, moment_scale, text_height, combo_name):
 
 
 def __RenderLoads(model, renderer, text_height, combo_name, case):
-    # 创建一个附加filter to store来存储所有的polydata(多边形数据). 这会是我们用更少的actor来展示所有荷载，从而大大提高渲染速度
-    # 当用到大量actor时VTK会变得很慢
+    # 创建一个附加filter来存储所有的polydata(多边形数据). 这会是我们用更少的actor来展示所有荷载，从而大大提高渲染速度
+    # 因为当用到大量actor时VTK会变得很慢
     polydata = vtk.vtkAppendPolyData()
 
     # Polygons are treated as cells in VTK. Create a cell array to store all the area load polygons
@@ -667,7 +667,7 @@ def __RenderLoads(model, renderer, text_height, combo_name, case):
     polygon_actor.SetMapper(polygon_mapper)
     renderer.AddActor(polygon_actor)
 
-
+#672-809定义了MaxLoads函数，但还不知道是干什么用的
 # %%
 def __MaxLoads(model, combo_name=None, case=None):
     max_pt_load = 0
@@ -808,9 +808,9 @@ def __MaxLoads(model, combo_name=None, case=None):
     # Return the maximum loads in the load combination or load case
     return max_pt_load, max_moment, max_dist_load, max_area_load
 
-
+#814-1085行定义visnode类
 # %%
-# Converts a node object into a node for the viewer
+# 把节点可视化
 class VisNode():
 
     # Constructor
@@ -1084,7 +1084,7 @@ class VisNode():
         # Set the mapper for the node's actor
         self.actor.SetMapper(mapper)
 
-
+#1089-1135定义visspring类，把spring(起拱线、起拱面)可视化
 # %%
 class VisSpring():
 
@@ -1136,7 +1136,7 @@ class VisSpring():
 
 
 # %%
-# Converts a member object into a member for the viewer
+# 1140-1185行定义vismember把杆件可视化
 class VisMember():
 
     # Constructor
@@ -1186,7 +1186,7 @@ class VisMember():
 
 
 # %%
-# Converts a node object into a node in its deformed position for the viewer
+# 1190-1217行Converts a node object into a node in its deformed position for the viewer
 class VisDeformedNode():
 
     def __init__(self, node, scale_factor, text_height=5, combo_name='Combo 1'):
@@ -1216,7 +1216,7 @@ class VisDeformedNode():
         self.lblActor.SetPosition(newX + 0.6 * text_height, newY + 0.6 * text_height, newZ)
         self.lblActor.GetProperty().SetColor(255, 255, 0)  # Yellow
 
-
+#1221-1297把杆件变形可视化
 # %%
 class VisDeformedMember():
 
@@ -1401,7 +1401,7 @@ class VisDeformedSpring():
 # %%
 class VisPtLoad():
     '''
-    Creates a point load for the viewer
+    显示point load(集中荷载)
     '''
 
     def __init__(self, position, direction, length, label_text=None, text_height=5):
@@ -1486,7 +1486,7 @@ class VisPtLoad():
 
 class VisDistLoad():
     '''
-    Creates a distributed load for the viewer
+    显示distributed load(分布荷载)
     '''
 
     def __init__(self, position1, position2, direction, length1, length2, label_text1, label_text2, text_height=5):
@@ -1559,7 +1559,7 @@ class VisDistLoad():
 
 class VisMoment():
     '''
-    Creates a concentrated moment for the viewer
+    显示concentrated moment(集中力偶)
     '''
 
     def __init__(self, center, direction, radius, label_text=None, text_height=5):
@@ -1630,7 +1630,7 @@ class VisMoment():
 
 class VisAreaLoad():
     '''
-    Creates an area load for the viewer
+    显示area load(表面荷载)
     '''
 
     def __init__(self, position0, position1, position2, position3, direction, length, label_text, text_height=5):
@@ -1667,7 +1667,7 @@ class VisAreaLoad():
 
 def PerpVector(v):
     '''
-    Returns a unit vector perpendicular to v=[i, j, k]
+    返回一个垂直于v=[i, j, k]的单位向量
     '''
 
     i = v[0]

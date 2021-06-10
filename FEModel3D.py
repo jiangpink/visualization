@@ -37,24 +37,24 @@ class FEModel3D():
 #%%
     def AddNode(self, Name, X, Y, Z):
         '''
-        Adds a new node to the model.
+        给模型添加新节点
         
-        Parameters
+        参数
         ----------
-        Name : string
-            A unique user-defined name for the node.
-        X : number
-            The global X-coordinate of the node.
-        Y : number
-            The global Y-coordinate of the node.
-        Z : number
-            The global Z-coordinate of the node.
+        Name : 字符串
+            用户给节点的命名
+        X : 数字
+            x坐标
+        Y : 数字
+            y坐标
+        Z : 数字
+            z坐标
         '''
         
-        # Create a new node
+        # 创建新节点
         newNode = Node3D(Name, X, Y, Z)
         
-        # Add the new node to the list
+        #把新节点添加到Noads列表里
         self.Nodes.append(newNode)
 
 #%%
@@ -281,20 +281,20 @@ class FEModel3D():
         '''
         Defines the support conditions at a node.
         
-        Nodes will default to fully unsupported unless specified otherwise.
+        节点默认fully unsupported unless specified otherwise.
         
         Parameters
         ----------
         Node : string
             The name of the node where the support is being defined
         SupportDX : number
-            Indicates whether the node is supported against translation in the global X-direction.
+            使沿x轴产生位移的support
         SupportDY : number
             Indicates whether the node is supported against translation in the global Y-direction.
         SupportDZ : number
             Indicates whether the node is supported against translation in the global Z-direction.
         SupportRX : number
-            Indicates whether the node is supported against rotation about the global X-axis.
+            使绕x轴旋转的suppport
         SupportRY : number
             Indicates whether the node is supported against rotation about the global Y-axis.
         SupportRZ : number

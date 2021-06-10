@@ -2,7 +2,6 @@
 import vtk
 from numpy import array, empty, append, cross
 from numpy.linalg import norm
-# 江
 
 # %%import vtk
 
@@ -50,22 +49,22 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
     if moment == True and case != None:
         raise Exception('Moment diagram is only available for load combinations,'
                         ' not load cases.')
-    # 为模型中每个点创造一个可视化节点
+    # 将模型中每个节点可视化
     vis_nodes = []
     for node in model.Nodes:
         vis_nodes.append(VisNode(node, text_height))
 
-    # 为模型中每个辅助节点创造可视化辅助节点
+    # 将模型中每个辅助节点可视化
     vis_aux_nodes = []
     for aux_node in model.auxNodes:
         vis_aux_nodes.append(VisNode(aux_node, text_height, color='red'))
 
-    # Create a visual spring for each spring in the model
+    # 将模型中每个spring可视化
     vis_springs = []
     for spring in model.Springs:
         vis_springs.append(VisSpring(spring, model.Nodes, text_height))
 
-    # 为模型中每个杆件创造可视化杆件
+    # 将模型中每个杆件可视化
     vis_members = []
     for member in model.Members:
         vis_members.append(VisMember(member, model.Nodes, text_height))
@@ -73,10 +72,10 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
     # 创造一个单元阵列（cell array）来存储 the plate elements
     plates = vtk.vtkCellArray()
 
-    # 创造一个 `vtkPoints` object to store all the plate points
+    # 创造一个 `vtkPoints` object来存储所有的plate points
     plate_points = vtk.vtkPoints()
 
-    # Create a lists to store plate results
+    # 创造一个列表来存储plate results
     # `results` will store the results in a python iterable list
     # `plate_results` will store the results in a `vtkDoubleArray` for VTK
     results = []
@@ -186,7 +185,7 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
                 r3 = item.shear(-1, 1, combo_name)[1, 0]
 
         if color_map != None:
-            # Save the results to the list of results
+            # 把结果保存到results列表中
             results.append(r0)
             results.append(r1)
             results.append(r2)
@@ -239,13 +238,13 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
         plate_mapper.SetScalarModeToUsePointData()
         lut.Build()
 
-    # Create a window
+    # 创建窗口
     window = vtk.vtkRenderWindow()
 
-    # Set the pixel width and length of the window
+    # 设置窗口的宽和长（像素值）
     window.SetSize(750, 750)
 
-    # Set up the interactor. The interactor style determines how user
+    # 设置interactor. The interactor style determines hoe user
     # interactions affect the view. The trackball camera style behaves much
     # like popular commercial CAD programs.
     interactor = vtk.vtkRenderWindowInteractor()
@@ -427,7 +426,7 @@ def __MomentDiagram(model, renderer, moment_scale, text_height, combo_name):
             vis_member = Vismom(member, model.Nodes, moment_scale, text_height, combo_name)
             append_filter.AddInputData(vis_member.source)
 
-    # Create a mapper and actor for the append filter
+    # 为附加filter创建一个mapper和actor
     mapper = vtk.vtkPolyDataMapper()
     mapper.SetInputConnection(append_filter.GetOutputPort())
     actor = vtk.vtkActor()
@@ -437,9 +436,8 @@ def __MomentDiagram(model, renderer, moment_scale, text_height, combo_name):
 
 
 def __RenderLoads(model, renderer, text_height, combo_name, case):
-    # Create an append filter to store all the polydata in. This will allow us to use fewer actors to
-    # display all the loads, which will greatly improve rendering speed as the user interacts. VTK
-    # becomes very slow when a large number of actors are used.
+    # 创建一个附加filter来存储所有的polydata(多边形数据). 这会是我们用更少的actor来展示所有荷载，从而大大提高渲染速度
+    # 因为当用到大量actor时VTK会变得很慢
     polydata = vtk.vtkAppendPolyData()
 
     # Polygons are treated as cells in VTK. Create a cell array to store all the area load polygons
@@ -669,7 +667,7 @@ def __RenderLoads(model, renderer, text_height, combo_name, case):
     polygon_actor.SetMapper(polygon_mapper)
     renderer.AddActor(polygon_actor)
 
-
+#672-809定义了MaxLoads函数，但还不知道是干什么用的
 # %%
 def __MaxLoads(model, combo_name=None, case=None):
     max_pt_load = 0
@@ -810,44 +808,44 @@ def __MaxLoads(model, combo_name=None, case=None):
     # Return the maximum loads in the load combination or load case
     return max_pt_load, max_moment, max_dist_load, max_area_load
 
-
+#814-1085行定义visnode类
 # %%
-# Converts a node object into a node for the viewer
+# 把节点可视化
 class VisNode():
 
     # Constructor
     def __init__(self, node, text_height=5, color=None):
 
-        # Create an append filter to append all the sources related to the node into a single 'PolyData' object
+        # 创建一个append filter来把和节点相关的所有信息添加进一个'PolyData'对象，虽然不知道filter是干啥用的
         self.polydata = vtk.vtkAppendPolyData()
 
-        # Get the node's position
+        # 获取节点位置即坐标x、y、z
         X = node.X  # Global X coordinate
         Y = node.Y  # Global Y coordinate
         Z = node.Z  # Global Z coordinate
 
-        # Generate a sphere source for the node
+        # 为节点生成一个sphere(球体) source
         sphere = vtk.vtkSphereSource()
         sphere.SetCenter(X, Y, Z)
         sphere.SetRadius(0.6 * text_height)
         sphere.Update()
         self.polydata.AddInputData(sphere.GetOutput())
 
-        # Create the text for the node label
+        # 为node label创建text
         label = vtk.vtkVectorText()
         label.SetText(node.Name)
 
-        # Set up a mapper for the node label
+        # 为node label 设置一个mapper
         lblMapper = vtk.vtkPolyDataMapper()
         lblMapper.SetInputConnection(label.GetOutputPort())
 
-        # Set up an actor for the node label
+        # 为node label设置一个actor
         self.lblActor = vtk.vtkFollower()
         self.lblActor.SetMapper(lblMapper)
         self.lblActor.SetScale(text_height, text_height, text_height)
         self.lblActor.SetPosition(X + 0.6 * text_height, Y + 0.6 * text_height, Z)
 
-        # Generate any supports that occur at the node
+        # 生成所有作用在节点的support
         # Check for a fixed suppport
         if node.SupportDX == True and node.SupportDY == True and node.SupportDZ == True \
                 and node.SupportRX == True and node.SupportRY == True and node.SupportRZ == True:
@@ -1067,7 +1065,7 @@ class VisNode():
                 support3.Update()
                 self.polydata.AddInputData(support3.GetOutput())
 
-        # Update the append filter
+        # 更新append filter
         self.polydata.Update()
 
         # Create a mapper and actor
@@ -1075,7 +1073,7 @@ class VisNode():
         mapper.SetInputConnection(self.polydata.GetOutputPort())
         self.actor = vtk.vtkActor()
 
-        # Add color to the actors
+        # 给actors上色
         if color == 'red':
             self.actor.GetProperty().SetColor(255, 0, 0)  # Red
             self.lblActor.GetProperty().SetColor(255, 0, 0)  # Red
@@ -1086,7 +1084,7 @@ class VisNode():
         # Set the mapper for the node's actor
         self.actor.SetMapper(mapper)
 
-
+#1089-1135定义visspring类，把spring(起拱线、起拱面)可视化
 # %%
 class VisSpring():
 
@@ -1138,7 +1136,7 @@ class VisSpring():
 
 
 # %%
-# Converts a member object into a member for the viewer
+# 1140-1185行定义vismember把杆件可视化
 class VisMember():
 
     # Constructor
@@ -1188,7 +1186,7 @@ class VisMember():
 
 
 # %%
-# Converts a node object into a node in its deformed position for the viewer
+# 1190-1217行Converts a node object into a node in its deformed position for the viewer
 class VisDeformedNode():
 
     def __init__(self, node, scale_factor, text_height=5, combo_name='Combo 1'):
@@ -1218,7 +1216,7 @@ class VisDeformedNode():
         self.lblActor.SetPosition(newX + 0.6 * text_height, newY + 0.6 * text_height, newZ)
         self.lblActor.GetProperty().SetColor(255, 255, 0)  # Yellow
 
-
+#1221-1297把杆件变形可视化
 # %%
 class VisDeformedMember():
 
@@ -1403,7 +1401,7 @@ class VisDeformedSpring():
 # %%
 class VisPtLoad():
     '''
-    Creates a point load for the viewer
+    显示point load(集中荷载)
     '''
 
     def __init__(self, position, direction, length, label_text=None, text_height=5):
@@ -1488,7 +1486,7 @@ class VisPtLoad():
 
 class VisDistLoad():
     '''
-    Creates a distributed load for the viewer
+    显示distributed load(分布荷载)
     '''
 
     def __init__(self, position1, position2, direction, length1, length2, label_text1, label_text2, text_height=5):
@@ -1561,7 +1559,7 @@ class VisDistLoad():
 
 class VisMoment():
     '''
-    Creates a concentrated moment for the viewer
+    显示concentrated moment(集中力偶)
     '''
 
     def __init__(self, center, direction, radius, label_text=None, text_height=5):
@@ -1632,7 +1630,7 @@ class VisMoment():
 
 class VisAreaLoad():
     '''
-    Creates an area load for the viewer
+    显示area load(表面荷载)
     '''
 
     def __init__(self, position0, position1, position2, position3, direction, length, label_text, text_height=5):
@@ -1669,7 +1667,7 @@ class VisAreaLoad():
 
 def PerpVector(v):
     '''
-    Returns a unit vector perpendicular to v=[i, j, k]
+    返回一个垂直于v=[i, j, k]的单位向量
     '''
 
     i = v[0]

@@ -288,13 +288,13 @@ class FEModel3D():
         Node : string
             The name of the node where the support is being defined
         SupportDX : number
-            使沿x轴产生位移的support
+            是否有使沿x轴产生位移的support
         SupportDY : number
             Indicates whether the node is supported against translation in the global Y-direction.
         SupportDZ : number
             Indicates whether the node is supported against translation in the global Z-direction.
         SupportRX : number
-            使绕x轴旋转的suppport
+            是否有使绕x轴旋转的support
         SupportRY : number
             Indicates whether the node is supported against rotation about the global Y-axis.
         SupportRZ : number
@@ -1244,7 +1244,7 @@ class FEModel3D():
         Parameters
         ----------
         check_statics : bool, optional
-            When set to True, causes a statics check to be performed
+            设置成True的话会执行statics check
         max_iter : number, optional
             The maximum number of iterations to try to get convergence
             for tension/compression-only analysis.
@@ -1283,7 +1283,7 @@ class FEModel3D():
         # Convert D2 from a list to a matrix
         D2 = matrix(D2).T
 
-        # Step through each load combination
+        # 遍历每个load combination
         for combo in self.LoadCombos.values():
 
             print('')
@@ -1394,7 +1394,7 @@ class FEModel3D():
                             spring.active[combo.name] = False
                             convergence = False
 
-                # Check tension-only and compression-only members
+                # 检查tension-only只受拉和compression-only只受压构件，即二力杆
                 print('...Checking for tension/compression-only member convergence')
                 for member in self.Members:
 

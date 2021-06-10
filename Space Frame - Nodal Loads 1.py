@@ -7,16 +7,16 @@
 from PyNite import FEModel3D
 import Visualization
 
-# Create a new model
+#创建新模型
 frame = FEModel3D()
 
-# Define the nodes
+#定义节点
 frame.AddNode('N1', 0, 0, 0)
 frame.AddNode('N2', -100, 0, 0)
 frame.AddNode('N3', 0, 0, -100)
 frame.AddNode('N4', 0, -100, 0)
 
-# Define the supports
+# define support
 frame.DefineSupport('N2', True, True, True, True, True, True)
 frame.DefineSupport('N3', True, True, True, True, True, True)
 frame.DefineSupport('N4', True, True, True, True, True, True)
@@ -33,14 +33,14 @@ frame.AddMember('M1', 'N2', 'N1', E, G, Iy, Iz, J, A)
 frame.AddMember('M2', 'N3', 'N1', E, G, Iy, Iz, J, A)
 frame.AddMember('M3', 'N4', 'N1', E, G, Iy, Iz, J, A)
 
-# Add nodal loads
+#添加节点荷载
 frame.AddNodeLoad('N1', 'FZ', 50)
 frame.AddNodeLoad('N1', 'MY', -100)
 
-# Analyze the model
+#进行力学分析
 frame.Analyze(check_statics=True)
 
-# Render the deformed shape
+#渲染变形
 Visualization.RenderModel(frame, text_height=5, deformed_shape=False,moment=True,deformed_scale=100, render_loads=True)
 
 # Print the node 1 displacements

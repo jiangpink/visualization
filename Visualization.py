@@ -49,22 +49,22 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
     if moment == True and case != None:
         raise Exception('Moment diagram is only available for load combinations,'
                         ' not load cases.')
-    # 为模型中每个点创造一个可视化节点
+    # 将模型中每个节点可视化
     vis_nodes = []
     for node in model.Nodes:
         vis_nodes.append(VisNode(node, text_height))
 
-    # 为模型中每个辅助节点创造可视化辅助节点
+    # 将模型中每个辅助节点可视化
     vis_aux_nodes = []
     for aux_node in model.auxNodes:
         vis_aux_nodes.append(VisNode(aux_node, text_height, color='red'))
 
-    # Create a visual spring for each spring in the model
+    # 将模型中每个spring可视化
     vis_springs = []
     for spring in model.Springs:
         vis_springs.append(VisSpring(spring, model.Nodes, text_height))
 
-    # 为模型中每个杆件创造可视化杆件
+    # 将模型中每个杆件可视化
     vis_members = []
     for member in model.Members:
         vis_members.append(VisMember(member, model.Nodes, text_height))
@@ -72,10 +72,10 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
     # 创造一个单元阵列（cell array）来存储 the plate elements
     plates = vtk.vtkCellArray()
 
-    # 创造一个 `vtkPoints` object to store all the plate points
+    # 创造一个 `vtkPoints` object来存储所有的plate points
     plate_points = vtk.vtkPoints()
 
-    # Create a lists to store plate results
+    # 创造一个列表来存储plate results
     # `results` will store the results in a python iterable list
     # `plate_results` will store the results in a `vtkDoubleArray` for VTK
     results = []
@@ -185,7 +185,7 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
                 r3 = item.shear(-1, 1, combo_name)[1, 0]
 
         if color_map != None:
-            # Save the results to the list of results
+            # 把结果保存到results列表中
             results.append(r0)
             results.append(r1)
             results.append(r2)
@@ -238,13 +238,13 @@ def RenderModel(model, text_height=5, deformed_shape=False, deformed_scale=30, m
         plate_mapper.SetScalarModeToUsePointData()
         lut.Build()
 
-    # Create a window
+    # 创建窗口
     window = vtk.vtkRenderWindow()
 
-    # Set the pixel width and length of the window
+    # 设置窗口的宽和长（像素值）
     window.SetSize(750, 750)
 
-    # Set up the interactor. The interactor style determines how user
+    # 设置interactor. The interactor style determines hoe user
     # interactions affect the view. The trackball camera style behaves much
     # like popular commercial CAD programs.
     interactor = vtk.vtkRenderWindowInteractor()
